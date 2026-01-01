@@ -1,0 +1,2 @@
+# nibbly
+A shorturl generator :)
