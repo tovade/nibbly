@@ -12,12 +12,16 @@ import { linkAPI } from '@/lib/api/links'
 import { authClient } from '@/lib/auth-client'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createFileRoute } from '@tanstack/react-router'
+import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import z from 'zod'
 
 export const Route = createFileRoute('/links/create')({
   component: RouteComponent,
+  validateSearch: z.object({
+    link: z.string().optional(),
+  }),
 })
 
 const linkSchema = z.object({
@@ -26,10 +30,18 @@ const linkSchema = z.object({
 })
 function RouteComponent() {
   const { data } = authClient.useSession()
-
-  const { handleSubmit, control } = useForm<z.infer<typeof linkSchema>>({
+  const { link } = Route.useSearch()
+  const { handleSubmit, control, setValue } = useForm<
+    z.infer<typeof linkSchema>
+  >({
     resolver: zodResolver(linkSchema),
   })
+
+  useEffect(() => {
+    if (link) {
+      setValue('link', link)
+    }
+  }, [link, setValue])
 
   const onSubmit = async (data: z.infer<typeof linkSchema>) => {
     const { data: resp, request } = await linkAPI.createShortURL(

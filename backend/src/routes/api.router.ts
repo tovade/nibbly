@@ -1,6 +1,6 @@
 import Elysia, { NotFoundError, t } from 'elysia'
 import { db } from '../lib/database/'
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import { linksSchema } from '../lib/database/schema'
 import { generateRandomString } from '../lib/utils/functions'
 import { auth, authMacro } from '../lib/services/Auth'
@@ -25,6 +25,29 @@ export const apiRouter = new Elysia({ name: 'API', prefix: '/api' })
             },
         })
     })
+    .delete(
+        '/:slug',
+        async ({ params, status, user }) => {
+            const dbItem = await db.query.linksSchema.findFirst({
+                where: and(
+                    eq(linksSchema.shortCode, params.slug),
+                    eq(linksSchema.userId, user.id)
+                ),
+            })
+            if (!dbItem)
+                return status(404, {
+                    error: 'Link not found.',
+                })
+
+            await db.delete(linksSchema).where(eq(linksSchema.id, dbItem.id))
+            return status(200, {
+                message: 'Ok',
+            })
+        },
+        {
+            auth: true,
+        }
+    )
     .get('/list/:userId', async ({ params, status }) => {
         const dbItem = await db.query.linksSchema.findMany({
             where: eq(linksSchema.userId, params.userId),

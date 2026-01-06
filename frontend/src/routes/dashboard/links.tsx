@@ -1,10 +1,24 @@
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
+import { isError } from '@/lib/api/base'
 import { linkAPI, RawLink } from '@/lib/api/links'
 import { authClient } from '@/lib/auth-client'
 import { createFileRoute } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequestHeaders } from '@tanstack/react-start/server'
-import { Link2, ExternalLink, Copy, BarChart3 } from 'lucide-react'
+import { Link2, Copy, BarChart3, Trash } from 'lucide-react'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 const serverFn = createServerFn({ method: 'GET' }).handler(async () => {
   const headers = await getRequestHeaders()
@@ -48,6 +62,17 @@ function RouteComponent() {
         <p className="text-muted-foreground mt-2">Please try again later.</p>
       </div>
     )
+  }
+
+  const deleteLink = async (slug: string) => {
+    const { request, data: resData } = await linkAPI.deleteLink(slug)
+
+    if (!request.ok) {
+      toast.error(isError(resData) ? resData.message : 'Something went wrong!')
+      return
+    }
+
+    toast.success('Successfully deleted url!')
   }
 
   const links = data.data as RawLink[]
@@ -115,9 +140,9 @@ function RouteComponent() {
                 </div>
 
                 <div className="col-span-2 flex justify-end gap-2">
-                  <button
+                  <Button
+                    variant={'outline'}
                     onClick={() => copyToClipboard(link.shortCode, link.id)}
-                    className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-secondary-foreground transition-colors"
                     title="Copy link"
                   >
                     <Copy className="h-4 w-4" />
@@ -126,16 +151,33 @@ function RouteComponent() {
                         Copied!
                       </span>
                     )}
-                  </button>
-                  <a
-                    href={link.orginalUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-secondary-foreground transition-colors"
-                    title="Open original"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                  </a>
+                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant={'destructive'}>
+                        <Trash />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Are you absolutely sure?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently
+                          delete this short link.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => deleteLink(link.shortCode)}
+                        >
+                          Continue
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </div>
             ))}

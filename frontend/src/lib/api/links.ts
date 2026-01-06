@@ -40,6 +40,18 @@ export const linkAPI = {
       data: dataResponse,
     }
   },
+  deleteLink: async (slug: string) => {
+    const res = await fetch(`${env.VITE_BACKEND_URL}/api/${slug}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    })
+    const dataResponse: DataResponse<null> = await res.json()
+
+    return {
+      request: res,
+      data: dataResponse,
+    }
+  },
 }
 
 export type LinkResponse = ErrorResponse | DataResponse<LinkData>

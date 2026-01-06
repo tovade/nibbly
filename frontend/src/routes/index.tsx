@@ -1,24 +1,16 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
-import {
-  Link2,
-  Zap,
-  BarChart3,
-  Shield,
-  Globe,
-  Copy,
-  Check,
-  ArrowRight,
-} from 'lucide-react'
+import { Link2, Zap, BarChart3, Shield, Globe, ArrowRight } from 'lucide-react'
 import Header from '@/components/Header'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 
 export const Route = createFileRoute('/')({ component: App })
 
 function App() {
   const [url, setUrl] = useState('')
-  const [shortUrl, setShortUrl] = useState('')
-  const [copied, setCopied] = useState(false)
-
+  const navigate = useNavigate()
   const features = [
     {
       icon: <Zap className="w-10 h-10 text-primary" />,
@@ -28,7 +20,14 @@ function App() {
     },
     {
       icon: <BarChart3 className="w-10 h-10 text-primary" />,
-      title: 'Detailed Analytics',
+      title: (
+        <p className="inline align-center">
+          Detailed analytics{' '}
+          <Badge className="inline h-5" variant={'outline'}>
+            soon
+          </Badge>
+        </p>
+      ),
       description:
         'Track clicks, geographic data, referrers, and devices. Understand your audience better.',
     },
@@ -48,17 +47,12 @@ function App() {
 
   const handleShorten = (e: React.FormEvent) => {
     e.preventDefault()
-    if (url) {
-      setShortUrl(
-        'Demo mode – URL shortening API is not connected. No real short URL is generated.',
-      )
-    }
-  }
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(shortUrl)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    navigate({
+      to: '/links/create',
+      search: {
+        link: url,
+      },
+    })
   }
 
   return (
@@ -95,43 +89,19 @@ function App() {
             {/* URL Shortener Form */}
             <form onSubmit={handleShorten} className="max-w-2xl mx-auto mb-8">
               <div className="flex flex-col sm:flex-row gap-3 p-2 bg-card rounded-xl border border-border shadow-lg">
-                <input
+                <Input
                   type="url"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   placeholder="Paste your long URL here..."
-                  className="flex-1 px-5 py-4 bg-transparent text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring rounded-lg text-lg"
                   required
                 />
-                <button
-                  type="submit"
-                  className="px-8 py-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
-                >
+                <Button type="submit">
                   Shorten
                   <ArrowRight className="w-5 h-5" />
-                </button>
+                </Button>
               </div>
             </form>
-            {/* Result */}
-            {shortUrl && (
-              <div className="max-w-xl mx-auto p-4 bg-card rounded-xl border border-primary/30 shadow-md animate-in fade-in slide-in-from-bottom-4">
-                <div className="flex items-center justify-between gap-4">
-                  <span className="text-primary font-mono text-lg truncate">
-                    {shortUrl}
-                  </span>
-                  <button
-                    onClick={handleCopy}
-                    className="p-2 hover:bg-muted rounded-lg transition-colors"
-                  >
-                    {copied ? (
-                      <Check className="w-5 h-5 text-primary" />
-                    ) : (
-                      <Copy className="w-5 h-5 text-muted-foreground" />
-                    )}
-                  </button>
-                </div>
-              </div>
-            )}
             {/* Stats */}
             <div className="flex flex-wrap justify-center gap-8 mt-16 text-center">
               <div>
@@ -168,7 +138,7 @@ function App() {
                 <div className="mb-5 p-3 bg-primary/10 rounded-lg w-fit group-hover:bg-primary/20 transition-colors">
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-semibold text-foreground mb-3">
+                <h3 className="text-xl font-semibold text-foreground mb-3 align-center">
                   {feature.title}
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -197,7 +167,7 @@ function App() {
                 Create Free Account
               </Link>
               <Link
-                to="/auth/login"
+                to="/links/create"
                 className="px-8 py-4 bg-secondary hover:bg-secondary/80 text-secondary-foreground font-semibold rounded-lg transition-colors"
               >
                 Create your first link
