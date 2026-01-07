@@ -102,21 +102,6 @@ function App() {
                 </Button>
               </div>
             </form>
-            {/* Stats */}
-            <div className="flex flex-wrap justify-center gap-8 mt-16 text-center">
-              <div>
-                <p className="text-4xl font-bold text-foreground">10M+</p>
-                <p className="text-muted-foreground">Links Created</p>
-              </div>{' '}
-              <div>
-                <p className="text-4xl font-bold text-foreground">500M+</p>
-                <p className="text-muted-foreground">Clicks Tracked</p>
-              </div>
-              <div>
-                <p className="text-4xl font-bold text-foreground">99.9%</p>
-                <p className="text-muted-foreground">Uptime</p>
-              </div>
-            </div>
           </div>
         </section>
 
@@ -180,7 +165,11 @@ function App() {
         <footer className="py-8 px-6 border-t border-border">
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <Link2 className="w-5 h-5 text-primary" />
+              <img
+                src="/logo_rounded.svg"
+                alt="Nibbly Logo"
+                className="w-16 h-16"
+              />
               <span className="text-foreground font-semibold">nibbly</span>
             </div>
             <p className="text-muted-foreground text-sm">

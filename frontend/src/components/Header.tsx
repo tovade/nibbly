@@ -1,4 +1,4 @@
-import { Link, useRouter } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 
 import { Moon, Sun } from 'lucide-react'
 import { useTheme } from './ThemeProvider'
@@ -14,16 +14,15 @@ import {
 
 export default function Header() {
   const { theme, setTheme } = useTheme()
-  const router = useRouter()
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark')
   }
 
   const { data } = authClient.useSession()
 
-  const logOut = () => {
-    authClient.signOut()
-    router.invalidate()
+  const logOut = async () => {
+    await authClient.signOut()
+    window.location.reload()
   }
   return (
     <>

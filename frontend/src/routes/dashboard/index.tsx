@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { authClient } from '@/lib/auth-client'
 import { authMiddleware } from '@/middleware/auth'
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { InfoIcon, SquareArrowOutUpRight } from 'lucide-react'
 import { useState } from 'react'
 
@@ -17,12 +17,17 @@ export const Route = createFileRoute('/dashboard/')({
 
 function RouteComponent() {
   const [url, setUrl] = useState('')
+  const navigate = useNavigate()
   const user = authClient.useSession()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Handle URL shortening
-    console.log('Shortening:', url)
+    navigate({
+      to: '/links/create',
+      search: {
+        link: url,
+      },
+    })
   }
 
   return (
