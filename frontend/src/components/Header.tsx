@@ -30,11 +30,11 @@ export default function Header() {
       <header className="sticky top-0 z-40 w-full border-b border-gray-200 dark:border-gray-800 bg-sidebar backdrop-blur-lg">
         <div className="flex h-16 items-center justify-between px-4 md:px-6">
           <div className="flex items-center gap-4">
-            <Link to="/" className="flex items-center gap-2">
+            <Link to="/" className="flex items-center gap-0.5">
               <img
                 src="/logo_rounded.svg"
                 alt="Nibbly Logo"
-                className="h-16 w-16 align-middle"
+                className="h-16 w-16 align-middle inline"
               />
 
               <span className="text-xl font-bold text-gray-900 dark:text-white hidden sm:block">

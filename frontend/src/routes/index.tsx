@@ -67,7 +67,7 @@ function App() {
 
           <div className="relative max-w-4xl mx-auto">
             <div className="flex items-center justify-center gap-3 mb-8">
-              <div className="bg-primary/20 rounded-xl">
+              <div className="bg-primary/20 rounded-2xl">
                 <img
                   src="/logo_rounded.svg"
                   alt="Nibbly Logo"
@@ -75,12 +75,12 @@ function App() {
                 />
               </div>
               <h1 className="text-5xl md:text-7xl font-black text-foreground tracking-tight font-sans">
-                nibbly
+                Nibbly
               </h1>
             </div>
             <p className="text-2xl md:text-3xl text-muted-foreground mb-4 font-light">
-              Short links,{' '}
-              <span className="text-primary font-medium">big impact</span>
+              Small bites,{' '}
+              <span className="text-primary font-medium">big links</span>
             </p>{' '}
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
               Transform long, unwieldy URLs into clean, memorable links. Track
@@ -94,6 +94,7 @@ function App() {
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   placeholder="Paste your long URL here..."
+                  className="border-none"
                   required
                 />
                 <Button type="submit">
