@@ -7,8 +7,7 @@ import {
   FieldError,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { isError } from '@/lib/api/base'
-import { linkAPI } from '@/lib/api/links'
+import { useLinkCreation } from '@/lib/api/links'
 import { authClient } from '@/lib/auth-client'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createFileRoute } from '@tanstack/react-router'
@@ -31,6 +30,8 @@ const linkSchema = z.object({
 function RouteComponent() {
   const { data } = authClient.useSession()
   const { link } = Route.useSearch()
+  const { mutateAsync } = useLinkCreation()
+
   const { handleSubmit, control, setValue } = useForm<
     z.infer<typeof linkSchema>
   >({
@@ -44,18 +45,15 @@ function RouteComponent() {
   }, [link, setValue])
 
   const onSubmit = async (data: z.infer<typeof linkSchema>) => {
-    const { data: resp, request } = await linkAPI.createShortURL(
-      data.link,
-      data.slug,
-    )
+    try {
+      const resp = await mutateAsync(data)
 
-    if (isError(resp) || !request.ok) {
-      return toast.error(
-        isError(resp) ? resp.error.message : 'An error occurred',
+      toast.success(
+        `Created a shorturl with the code: ${resp?.data?.shortCode}`,
       )
+    } catch (err: any) {
+      return toast.error(err)
     }
-
-    toast.success(`Created a shorturl with the code: ${resp.data?.shortCode}`)
   }
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">

@@ -1,6 +1,8 @@
 import { env } from '@/env'
-import { DataResponse, ErrorResponse } from './base'
+import { DataResponse, ErrorResponse, isError } from './base'
+import { queryOptions, useMutation, useQuery } from '@tanstack/react-query'
 
+// API
 export const linkAPI = {
   createShortURL: async (link: string, slug?: string) => {
     const data = slug ? { link, slug } : { link }
@@ -56,11 +58,85 @@ export const linkAPI = {
   },
 }
 
+// hooks
+
+export function useLink(slug: string) {
+  return useQuery({
+    queryKey: [`link:${slug}`],
+    queryFn: async () => {
+      const { request, data } = await linkAPI.getShortURL(slug)
+
+      if (!request.ok || isError(data)) {
+        throw new Error((data as ErrorResponse).message)
+      }
+
+      return data
+    },
+  })
+}
+
+export const linkOptions = (slug: string) =>
+  queryOptions({
+    queryKey: ['link', slug],
+    queryFn: async () => {
+      const { request, data } = await linkAPI.getShortURL(slug)
+
+      if (!request.ok || isError(data)) {
+        throw new Error((data as ErrorResponse).message)
+      }
+
+      return data
+    },
+  })
+
+export function useUserLinks() {
+  return useQuery({
+    queryKey: ['links'],
+    queryFn: async () => {
+      const { request, data } = await linkAPI.getAllLinks()
+
+      if (!request.ok || isError(data)) {
+        throw new Error((data as ErrorResponse).message)
+      }
+
+      return data
+    },
+  })
+}
+
+export function useLinkCreation() {
+  return useMutation({
+    mutationFn: async ({ link, slug }: { link: string; slug?: string }) => {
+      const { request, data } = await linkAPI.createShortURL(link, slug)
+
+      if (!request.ok || isError(data)) {
+        throw new Error((data as ErrorResponse).message)
+      }
+
+      return data
+    },
+  })
+}
+export function useLinkDeletion() {
+  return useMutation({
+    mutationFn: async ({ slug }: { slug: string }) => {
+      const { request, data } = await linkAPI.deleteLink(slug)
+
+      if (!request.ok || isError(data)) {
+        throw new Error((data as ErrorResponse).message)
+      }
+
+      return data
+    },
+  })
+}
+
+// types
 export type LinkResponse = ErrorResponse | DataResponse<LinkData>
 
 export type LinkData = {
   shortCode: string
-  originalUrl: string
+  orginalUrl: string
 }
 
 export type RawLink = {

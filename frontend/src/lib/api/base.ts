@@ -1,7 +1,6 @@
 export type ErrorResponse = {
-  error: {
-    message: string
-  }
+  errors: string[]
+  message: string
 }
 
 export type DataResponse<T> = {
@@ -12,5 +11,5 @@ export type DataResponse<T> = {
 export function isError<T>(
   response: ErrorResponse | DataResponse<T>,
 ): response is ErrorResponse {
-  return (response as ErrorResponse).error !== undefined
+  return (response as ErrorResponse).errors !== undefined
 }

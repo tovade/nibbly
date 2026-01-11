@@ -1,24 +1,21 @@
-import { isError } from '@/lib/api/base'
-import { linkAPI } from '@/lib/api/links'
+import { linkOptions } from '@/lib/api/links'
+import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/links/$linkId')({
   component: RouteComponent,
-  loader: async ({ params }) => {
-    const { data, request } = await linkAPI.getShortURL(params.linkId)
+  loader: async ({ params: { linkId }, context }) => {
+    const data = await context.queryClient.ensureQueryData(linkOptions(linkId))
 
-    return {
-      ok: request.ok,
-      status: request.status,
-      data,
-    }
+    return data
   },
 })
 
 function RouteComponent() {
-  const { ok, data } = Route.useLoaderData()
+  const { linkId } = Route.useParams()
+  const { data, isError } = useSuspenseQuery(linkOptions(linkId))
   const navigate = useNavigate()
-  if (isError(data) || !ok) {
+  if (isError) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
         <div className="text-center">
@@ -36,8 +33,7 @@ function RouteComponent() {
       </div>
     )
   }
-
-  navigate({ href: data.data?.originalUrl })
+  navigate({ href: data.data?.orginalUrl })
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
