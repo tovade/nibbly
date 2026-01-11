@@ -13,6 +13,7 @@ import appCss from '../styles.css?url'
 import type { QueryClient } from '@tanstack/react-query'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { Toaster } from '@/components/ui/sonner'
+import { getThemeServerFn } from '@/lib/theme'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -40,17 +41,21 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
   }),
 
+  loader: () => getThemeServerFn(),
+
   shellComponent: RootDocument,
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const theme = Route.useLoaderData()
   return (
-    <html lang="en">
+    <html lang="en" className={theme}>
       <head>
         <HeadContent />
       </head>
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider theme={theme}>{children}</ThemeProvider>
+
         <Toaster />
         <TanStackDevtools
           config={{
