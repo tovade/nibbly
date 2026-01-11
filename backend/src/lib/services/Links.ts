@@ -92,9 +92,9 @@ export class LinkManager {
             const MAX_ATTEMPTS = 5
 
             while (existing && attempts < MAX_ATTEMPTS) {
-                slug = generateRandomString(8)
+                finalSlug = generateRandomString(8)
                 existing = await db.query.linksSchema.findFirst({
-                    where: eq(linksSchema.shortCode, slug),
+                    where: eq(linksSchema.shortCode, finalSlug),
                 })
                 attempts++
             }
@@ -110,7 +110,7 @@ export class LinkManager {
         const newItem = await db
             .insert(linksSchema)
             .values({
-                shortCode: slug,
+                shortCode: finalSlug,
                 orginalUrl: link,
                 userId: session ? session.userId : null,
             })
