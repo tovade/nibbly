@@ -12,28 +12,15 @@ import {
 import { Button } from '@/components/ui/button'
 import { isError } from '@/lib/api/base'
 import { linkAPI, RawLink } from '@/lib/api/links'
-import { authClient } from '@/lib/auth-client'
 import { createFileRoute } from '@tanstack/react-router'
-import { createServerFn } from '@tanstack/react-start'
-import { getRequestHeaders } from '@tanstack/react-start/server'
 import { Link2, Copy, BarChart3, Trash } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-const serverFn = createServerFn({ method: 'GET' }).handler(async () => {
-  const headers = await getRequestHeaders()
-  return headers
-})
-
 export const Route = createFileRoute('/dashboard/links')({
   component: RouteComponent,
   loader: async () => {
-    const headers = await serverFn()
-    const session = authClient.getSession({ fetchOptions: { headers } })
-
-    const { data, request } = await linkAPI.getAllLinks(
-      (await session).data?.user.id as string,
-    )
+    const { data, request } = await linkAPI.getAllLinks()
 
     return {
       ok: request.ok,

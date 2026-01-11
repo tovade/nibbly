@@ -8,3 +8,15 @@ declare namespace NodeJS {
         BETTER_AUTH_URL: string
     }
 }
+
+export type ErrorResponse = {
+    errors: string[]
+    message: string
+}
+
+export type DataResponse<T = any> = {
+    message: string
+    data?: T
+}
+
+export type Response<T> = ErrorResponse | DataResponse<T>

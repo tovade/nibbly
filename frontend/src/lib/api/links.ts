@@ -31,8 +31,10 @@ export const linkAPI = {
       data: dataResponse,
     }
   },
-  getAllLinks: async (userId: string) => {
-    const res = await fetch(`${env.VITE_BACKEND_URL}/api/list/${userId}`)
+  getAllLinks: async () => {
+    const res = await fetch(`${env.VITE_BACKEND_URL}/api/list/`, {
+      credentials: 'include',
+    })
     const dataResponse: LinkListResponse = await res.json()
 
     return {

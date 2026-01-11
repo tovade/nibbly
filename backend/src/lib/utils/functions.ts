@@ -1,4 +1,5 @@
 import { randomInt } from 'crypto'
+import type { DataResponse, ErrorResponse } from '../types'
 
 export function generateRandomString(length: number): string {
     const chars =
@@ -9,4 +10,10 @@ export function generateRandomString(length: number): string {
         result += chars.charAt(index)
     }
     return result
+}
+
+export function isError(
+    resp: ErrorResponse | DataResponse
+): resp is ErrorResponse {
+    return (resp as ErrorResponse).errors !== undefined
 }
