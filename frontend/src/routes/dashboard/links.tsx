@@ -67,11 +67,7 @@ function LinksSkeleton() {
 }
 function RouteComponent() {
   const { data, isLoading, isError } = useUserLinks()
-  const {
-    mutate,
-    isError: isDeletionError,
-    data: deletetionData,
-  } = useLinkDeletion()
+  const { mutateAsync } = useLinkDeletion()
   const [copiedId, setCopiedId] = useState<number | null>(null)
 
   const copyToClipboard = async (shortCode: string, id: number) => {
@@ -93,14 +89,13 @@ function RouteComponent() {
   }
 
   const deleteLink = async (slug: string) => {
-    mutate({ slug })
+    try {
+      await mutateAsync({ slug })
 
-    if (!isDeletionError) {
-      toast.error(deletetionData?.message)
-      return
+      toast.success('Successfully deleted url!')
+    } catch (err: any) {
+      return toast.error(err)
     }
-
-    toast.success('Successfully deleted url!')
   }
 
   const links = data?.data as RawLink[]
