@@ -148,13 +148,13 @@ function RouteComponent() {
 
                   <div className="col-span-5">
                     <a
-                      href={link.orginalUrl}
+                      href={link.originalUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-muted-foreground hover:text-foreground truncate block text-sm"
-                      title={link.orginalUrl}
+                      title={link.originalUrl}
                     >
-                      {link.orginalUrl}
+                      {link.originalUrl}
                     </a>
                   </div>
 

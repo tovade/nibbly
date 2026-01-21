@@ -1,5 +1,5 @@
 {
-  "id": "ccfd1a9e-9a01-443b-b9df-5bb8e43cac1d",
+  "id": "8b13e99d-0a07-48a5-b330-144e1c584092",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -577,8 +577,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "orginalUrl": {
-          "name": "orginalUrl",
+        "originalUrl": {
+          "name": "originalUrl",
           "type": "text",
           "primaryKey": false,
           "notNull": false

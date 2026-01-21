@@ -111,7 +111,7 @@ export class LinkManager {
             .insert(linksSchema)
             .values({
                 shortCode: finalSlug,
-                orginalUrl: link,
+                originalUrl: link,
                 userId: session ? session.userId : null,
             })
             .returning()

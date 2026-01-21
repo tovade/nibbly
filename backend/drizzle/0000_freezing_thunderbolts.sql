@@ -76,7 +76,7 @@ CREATE TABLE "verification" (
 CREATE TABLE "urls" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"shortCode" text,
-	"orginalUrl" text,
+	"originalUrl" text,
 	"user_id" text,
 	"click_count" integer DEFAULT 0,
 	"createdAt" timestamp DEFAULT now(),

@@ -136,14 +136,14 @@ export type LinkResponse = ErrorResponse | DataResponse<LinkData>
 
 export type LinkData = {
   shortCode: string
-  orginalUrl: string
+  originalUrl: string
 }
 
 export type RawLink = {
   id: number
   userId: string
   shortCode: string
-  orginalUrl: string
+  originalUrl: string
   clickCount: number
   createdAt: Date
   updatedAt: Date

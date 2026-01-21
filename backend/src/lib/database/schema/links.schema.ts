@@ -4,7 +4,7 @@ import { user } from 'db/schema/auth.schema.ts'
 export const linksSchema = pgTable('urls', {
     id: serial('id').primaryKey(),
     shortCode: text('shortCode').unique(),
-    orginalUrl: text('orginalUrl'),
+    originalUrl: text('originalUrl'),
     userId: text('user_id').references(() => user.id, { onDelete: 'cascade' }),
     clickCount: integer('click_count').default(0),
     createdAt: timestamp('createdAt').defaultNow(),
