@@ -1,12 +1,12 @@
+import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
+import { InfoIcon, SquareArrowOutUpRight } from 'lucide-react'
+import { useState } from 'react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { authClient } from '@/lib/auth-client'
 import { authMiddleware } from '@/middleware/auth'
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { InfoIcon, SquareArrowOutUpRight } from 'lucide-react'
-import { useState } from 'react'
 
 export const Route = createFileRoute('/dashboard/')({
   component: RouteComponent,

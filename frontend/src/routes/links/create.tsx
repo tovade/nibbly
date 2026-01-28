@@ -1,20 +1,20 @@
-import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import {
-  FieldGroup,
-  Field,
-  FieldLabel,
-  FieldError,
-} from '@/components/ui/field'
-import { Input } from '@/components/ui/input'
-import { useLinkCreation } from '@/lib/api/links'
-import { authClient } from '@/lib/auth-client'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import z from 'zod'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
+import { useLinkCreation } from '@/lib/api/links'
+import { authClient } from '@/lib/auth-client'
 
 export const Route = createFileRoute('/links/create')({
   component: RouteComponent,
@@ -44,13 +44,11 @@ function RouteComponent() {
     }
   }, [link, setValue])
 
-  const onSubmit = async (data: z.infer<typeof linkSchema>) => {
+  const onSubmit = async (dataForm: z.infer<typeof linkSchema>) => {
     try {
-      const resp = await mutateAsync(data)
+      const resp = await mutateAsync(dataForm)
 
-      toast.success(
-        `Created a shorturl with the code: ${resp?.data?.shortCode}`,
-      )
+      toast.success(`Created a shorturl with the code: ${resp.data?.shortCode}`)
     } catch (err: any) {
       return toast.error(err)
     }

@@ -1,6 +1,6 @@
-import { linkOptions } from '@/lib/api/links'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { linkOptions } from '@/lib/api/links'
 
 export const Route = createFileRoute('/links/$linkId')({
   component: RouteComponent,

@@ -1,3 +1,10 @@
+import { createFileRoute } from '@tanstack/react-router'
+import { BarChart3, Copy, Link2, Trash } from 'lucide-react'
+import { useState } from 'react'
+import { toast } from 'sonner'
+import type { RawLink } from '@/lib/api/links'
+import { useLinkDeletion, useUserLinks } from '@/lib/api/links'
+import { Button } from '@/components/ui/button'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,12 +16,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import { RawLink, useLinkDeletion, useUserLinks } from '@/lib/api/links'
-import { createFileRoute } from '@tanstack/react-router'
-import { Link2, Copy, BarChart3, Trash } from 'lucide-react'
-import { useState } from 'react'
-import { toast } from 'sonner'
 
 export const Route = createFileRoute('/dashboard/links')({
   component: RouteComponent,
@@ -98,7 +99,7 @@ function RouteComponent() {
     }
   }
 
-  const links = data?.data as RawLink[]
+  const links = data?.data as Array<RawLink>
 
   return (
     <div className="container mx-auto px-4 py-8">
