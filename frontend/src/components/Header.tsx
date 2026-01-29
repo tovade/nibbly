@@ -2,7 +2,6 @@ import { Link } from '@tanstack/react-router'
 
 import { Moon, Sun } from 'lucide-react'
 import { useTheme } from './ThemeProvider'
-import { authClient } from '@/lib/auth-client'
 import { Button } from './ui/button'
 import {
   DropdownMenu,
@@ -11,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
+import { authClient } from '@/lib/auth-client'
 
 export default function Header() {
   const { theme, setTheme } = useTheme()
@@ -67,6 +67,16 @@ export default function Header() {
                   <Link to="/dashboard">
                     <DropdownMenuItem className="cursor-pointer">
                       View dashboard
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link to="/dashboard/links">
+                    <DropdownMenuItem className="cursor-pointer">
+                      Manage links
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link to="/links/create">
+                    <DropdownMenuItem className="cursor-pointer">
+                      Create link
                     </DropdownMenuItem>
                   </Link>
                   <DropdownMenuSeparator />
