@@ -75,40 +75,6 @@ function RouteComponent() {
             </form>
           </CardContent>
         </Card>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-3 gap-4 mb-8 mt-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Total links</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                24
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Total Clicks</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                1,234
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>This month</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                156
-              </p>
-            </CardContent>
-          </Card>
-        </div>
       </div>
     </div>
   )

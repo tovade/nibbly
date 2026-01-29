@@ -211,10 +211,6 @@ function RouteComponent() {
                 </div>
               ))}
             </div>
-
-            <div className="text-sm text-muted-foreground text-center mt-4">
-              Total: {links.length} link{links.length !== 1 ? 's' : ''}
-            </div>
           </div>
         ))}
     </div>

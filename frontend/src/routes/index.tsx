@@ -171,7 +171,7 @@ function App() {
                 alt="Nibbly Logo"
                 className="w-16 h-16"
               />
-              <span className="text-foreground font-semibold">nibbly</span>
+              <span className="text-foreground font-semibold">Nibbly</span>
             </div>
             <p className="text-muted-foreground text-sm">
               © 2026 Nibbly. All rights reserved.
