@@ -4,6 +4,8 @@ import { linksSchema } from '../database/schema'
 import type { ErrorResponse, Response } from '../types'
 import type { Session, User } from 'better-auth'
 import { generateRandomString } from '../utils/functions'
+import { isHttpUrl } from '../utils/url'
+import { RESERVED_SLUGS } from '../../config/analytics.config'
 
 export class LinkManager {
     constructor() {}
@@ -77,6 +79,22 @@ export class LinkManager {
         slug?: string
         session?: Session
     }): Promise<Response<typeof linksSchema.$inferInsert>> {
+        // format: 'uri' accepts any scheme (javascript:, data:, ...), and the frontend
+        // redirects to this value, so only real web links are allowed
+        if (!isHttpUrl(link)) {
+            return {
+                message: 'Only http and https links are allowed',
+                errors: ['Only http and https links are allowed'],
+            } as ErrorResponse
+        }
+
+        if (slug && RESERVED_SLUGS.has(slug.toLowerCase())) {
+            return {
+                message: 'That slug is reserved',
+                errors: ['That slug is reserved'],
+            } as ErrorResponse
+        }
+
         let finalSlug = slug ?? generateRandomString(8)
 
         let existing = await db.query.linksSchema.findFirst({

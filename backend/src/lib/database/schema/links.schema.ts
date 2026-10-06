@@ -6,7 +6,8 @@ export const linksSchema = pgTable('urls', {
     shortCode: text('shortCode').unique(),
     originalUrl: text('originalUrl'),
     userId: text('user_id').references(() => user.id, { onDelete: 'cascade' }),
-    clickCount: integer('click_count').default(0),
+    totalClicks: integer('total_clicks').default(0),
+    uniqueClicks: integer('unique_clicks').default(0),
     createdAt: timestamp('createdAt').defaultNow(),
     updatedAt: timestamp('updatedAt')
         .defaultNow()

@@ -1,6 +1,18 @@
+import {
+  queryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query'
+import { isError } from './base'
+import type { DataResponse, ErrorResponse } from './base'
 import { env } from '@/env'
-import { DataResponse, ErrorResponse, isError } from './base'
-import { queryOptions, useMutation, useQuery } from '@tanstack/react-query'
+
+// Short links are served by the frontend's /$slug page, so they live on this app's own origin.
+// Browser only: call this from event handlers, not during render (SSR has no window).
+export function getShortUrl(shortCode: string) {
+  return `${window.location.origin}/${shortCode}`
+}
 
 // API
 export const linkAPI = {
@@ -27,6 +39,32 @@ export const linkAPI = {
     const res = await fetch(`${env.VITE_BACKEND_URL}/api/${slug}`)
 
     const dataResponse: LinkResponse = await res.json()
+
+    return {
+      request: res,
+      data: dataResponse,
+    }
+  },
+  // Resolves the destination AND records the click. It must be called from the
+  // visitor's own browser so the backend sees their real IP and user agent.
+  visitShortURL: async (slug: string, referrer: string) => {
+    const res = await fetch(
+      `${env.VITE_BACKEND_URL}/api/${encodeURIComponent(slug)}/visit`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(referrer ? { referrer } : {}),
+      },
+    )
+    const dataResponse: VisitResponse = await res
+      .json()
+      .catch(() => ({
+        message: 'Unexpected response',
+        errors: ['Unexpected response'],
+      }))
 
     return {
       request: res,
@@ -105,6 +143,8 @@ export function useUserLinks() {
 }
 
 export function useLinkCreation() {
+  const queryClient = useQueryClient()
+
   return useMutation({
     mutationFn: async ({ link, slug }: { link: string; slug?: string }) => {
       const { request, data } = await linkAPI.createShortURL(link, slug)
@@ -115,9 +155,12 @@ export function useLinkCreation() {
 
       return data
     },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['links'] }),
   })
 }
 export function useLinkDeletion() {
+  const queryClient = useQueryClient()
+
   return useMutation({
     mutationFn: async ({ slug }: { slug: string }) => {
       const { request, data } = await linkAPI.deleteLink(slug)
@@ -127,6 +170,9 @@ export function useLinkDeletion() {
       }
 
       return data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['links'] })
     },
   })
 }
@@ -139,14 +185,19 @@ export type LinkData = {
   originalUrl: string
 }
 
+export type VisitResponse =
+  | ErrorResponse
+  | DataResponse<{ originalUrl: string }>
+
 export type RawLink = {
   id: number
   userId: string
   shortCode: string
   originalUrl: string
-  clickCount: number
+  totalClicks: number
+  uniqueClicks: number
   createdAt: Date
   updatedAt: Date
 }
 
-export type LinkListResponse = ErrorResponse | DataResponse<RawLink[]>
+export type LinkListResponse = ErrorResponse | DataResponse<Array<RawLink>>

@@ -6,6 +6,9 @@ declare namespace NodeJS {
 
         BETTER_AUTH_SECRET: string
         BETTER_AUTH_URL: string
+
+        ANALYTICS_SALT: string
+        TRUST_PROXY?: string
     }
 }
 
