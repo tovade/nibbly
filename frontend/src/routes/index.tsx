@@ -4,13 +4,13 @@ import { ArrowRight, BarChart3, Globe, Shield, Zap } from 'lucide-react'
 import Header from '@/components/Header'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 
 export const Route = createFileRoute('/')({ component: App })
 
 function App() {
   const [url, setUrl] = useState('')
   const navigate = useNavigate()
+
   const features = [
     {
       icon: <Zap className="w-10 h-10 text-primary" />,
@@ -20,14 +20,7 @@ function App() {
     },
     {
       icon: <BarChart3 className="w-10 h-10 text-primary" />,
-      title: (
-        <p className="inline align-center">
-          Detailed analytics{' '}
-          <Badge className="inline h-5" variant={'outline'}>
-            soon
-          </Badge>
-        </p>
-      ),
+      title: 'Detailed analytics',
       description:
         'Track clicks, geographic data, referrers, and devices. Understand your audience better.',
     },

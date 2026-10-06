@@ -1,9 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import { BarChart3, Copy, Link2, Trash } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import type { RawLink } from '@/lib/api/links'
-import { useLinkDeletion, useUserLinks } from '@/lib/api/links'
+import { getShortUrl, useLinkDeletion, useUserLinks } from '@/lib/api/links'
 import { Button } from '@/components/ui/button'
 import {
   AlertDialog,
@@ -17,7 +17,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 
-export const Route = createFileRoute('/dashboard/links')({
+export const Route = createFileRoute('/dashboard/links/')({
   component: RouteComponent,
 })
 
@@ -27,9 +27,9 @@ function LinksSkeleton() {
       <div className="rounded-lg border border-border bg-card shadow-sm">
         <div className="grid grid-cols-12 gap-4 border-b border-border px-6 py-3 text-sm font-medium text-muted-foreground">
           <div className="col-span-3">Short URL</div>
-          <div className="col-span-5">Original URL</div>
+          <div className="col-span-4">Original URL</div>
           <div className="col-span-2 text-center">Clicks</div>
-          <div className="col-span-2 text-right">Actions</div>
+          <div className="col-span-3 text-right">Actions</div>
         </div>
 
         {[...Array(5)].map((_, index) => (
@@ -44,7 +44,7 @@ function LinksSkeleton() {
               </div>
             </div>
 
-            <div className="col-span-5">
+            <div className="col-span-4">
               <div className="h-4 w-full max-w-xs rounded bg-muted animate-pulse" />
             </div>
 
@@ -52,7 +52,8 @@ function LinksSkeleton() {
               <div className="h-7 w-16 rounded-full bg-muted animate-pulse" />
             </div>
 
-            <div className="col-span-2 flex justify-end gap-2">
+            <div className="col-span-3 flex justify-end gap-2">
+              <div className="h-9 w-9 rounded-md bg-muted animate-pulse" />
               <div className="h-9 w-9 rounded-md bg-muted animate-pulse" />
               <div className="h-9 w-9 rounded-md bg-muted animate-pulse" />
             </div>
@@ -72,8 +73,7 @@ function RouteComponent() {
   const [copiedId, setCopiedId] = useState<number | null>(null)
 
   const copyToClipboard = async (shortCode: string, id: number) => {
-    const url = `${window.location.origin}/${shortCode}`
-    await navigator.clipboard.writeText(url)
+    await navigator.clipboard.writeText(getShortUrl(shortCode))
     setCopiedId(id)
     setTimeout(() => setCopiedId(null), 2000)
   }
@@ -128,9 +128,9 @@ function RouteComponent() {
             <div className="rounded-lg border border-border bg-card shadow-sm">
               <div className="grid grid-cols-12 gap-4 border-b border-border px-6 py-3 text-sm font-medium text-muted-foreground">
                 <div className="col-span-3">Short URL</div>
-                <div className="col-span-5">Original URL</div>
+                <div className="col-span-4">Original URL</div>
                 <div className="col-span-2 text-center">Clicks</div>
-                <div className="col-span-2 text-right">Actions</div>
+                <div className="col-span-3 text-right">Actions</div>
               </div>
 
               {links.map((link) => (
@@ -147,7 +147,7 @@ function RouteComponent() {
                     </div>
                   </div>
 
-                  <div className="col-span-5">
+                  <div className="col-span-4">
                     <a
                       href={link.originalUrl}
                       target="_blank"
@@ -163,12 +163,20 @@ function RouteComponent() {
                     <div className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1">
                       <BarChart3 className="h-3.5 w-3.5 text-secondary-foreground" />
                       <span className="text-sm font-medium text-secondary-foreground">
-                        {link.clickCount}
+                        {link.totalClicks}
                       </span>
                     </div>
                   </div>
 
-                  <div className="col-span-2 flex justify-end gap-2">
+                  <div className="col-span-3 flex justify-end gap-2">
+                    <Button variant={'outline'} asChild title="View analytics">
+                      <Link
+                        to="/dashboard/links/$slug"
+                        params={{ slug: link.shortCode }}
+                      >
+                        <BarChart3 className="h-4 w-4" />
+                      </Link>
+                    </Button>
                     <Button
                       variant={'outline'}
                       onClick={() => copyToClipboard(link.shortCode, link.id)}
