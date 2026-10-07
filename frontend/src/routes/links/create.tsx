@@ -61,11 +61,11 @@ function RouteComponent() {
     }
   }
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <Card className="w-full max-w-md">
+    <div className="flex min-h-[calc(100svh-4rem)] items-center justify-center bg-background px-4 py-10">
+      <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center">
           <CardTitle>
-            <h1 className="text-3xl font-bold">Create shorturl</h1>
+            <h1 className="text-3xl font-bold">Create a short link</h1>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -121,7 +121,7 @@ function RouteComponent() {
             </FieldGroup>
 
             <Button type="submit" className="w-full" variant={'default'}>
-              <LoadingSwap isLoading={isPending}>Generate url</LoadingSwap>
+              <LoadingSwap isLoading={isPending}>Create link</LoadingSwap>
             </Button>
           </form>
         </CardContent>

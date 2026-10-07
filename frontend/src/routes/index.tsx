@@ -7,36 +7,36 @@ import { Button } from '@/components/ui/button'
 
 export const Route = createFileRoute('/')({ component: App })
 
+const features = [
+  {
+    icon: Zap,
+    title: 'Instant links',
+    description:
+      'Paste a URL and get a short link back right away. Redirects stay quick, too.',
+  },
+  {
+    icon: BarChart3,
+    title: 'Clear analytics',
+    description:
+      'See clicks, countries, referrers and devices for every link, without digging through reports.',
+  },
+  {
+    icon: Shield,
+    title: 'Private by default',
+    description:
+      'Visitor IP addresses are never stored, and we never sell your data.',
+  },
+  {
+    icon: Globe,
+    title: 'Custom bites',
+    description:
+      'Pick your own ending, like /summer-menu, so your links are easy to read, remember and trust.',
+  },
+]
+
 function App() {
   const [url, setUrl] = useState('')
   const navigate = useNavigate()
-
-  const features = [
-    {
-      icon: <Zap className="w-10 h-10 text-primary" />,
-      title: 'Lightning Fast',
-      description:
-        'Create short links in milliseconds. No delays, no waiting. Just instant, reliable redirects.',
-    },
-    {
-      icon: <BarChart3 className="w-10 h-10 text-primary" />,
-      title: 'Detailed analytics',
-      description:
-        'Track clicks, geographic data, referrers, and devices. Understand your audience better.',
-    },
-    {
-      icon: <Shield className="w-10 h-10 text-primary" />,
-      title: 'Secure & Private',
-      description:
-        'Your links are protected with enterprise-grade security. We never sell your data.',
-    },
-    {
-      icon: <Globe className="w-10 h-10 text-primary" />,
-      title: 'Custom endpoints',
-      description:
-        'Want a branded link? Customize your short URLs to match your brand identity and boost recognition.',
-    },
-  ]
 
   const handleShorten = (e: React.FormEvent) => {
     e.preventDefault()
@@ -50,127 +50,134 @@ function App() {
 
   return (
     <>
-      <Header />
-      <div className="min-h-screen bg-background">
-        {/* Hero Section */}
-        <section className="relative py-24 px-6 text-center overflow-hidden">
-          <div className="absolute inset-0 bg-linear-to-r from-primary/5 via-accent/5 to-primary/5"></div>
-          <div className="absolute top-20 left-1/4 w-72 h-72 bg-primary/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl"></div>
+      <div className="relative isolate overflow-x-clip bg-background">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[44rem] bg-[radial-gradient(60rem_34rem_at_88%_-8%,color-mix(in_oklch,var(--accent)_75%,transparent),transparent_70%)] dark:bg-[radial-gradient(60rem_34rem_at_88%_-8%,color-mix(in_oklch,var(--accent)_40%,transparent),transparent_70%)]"
+        />
+        <Header />
+        <main className="min-h-screen">
+          {/* Hero */}
+          <section>
+            <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 pt-14 pb-20 md:px-6 md:pt-24 md:pb-28 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+              <div>
+                <h1 className="text-5xl leading-[1.02] font-bold sm:text-6xl lg:text-7xl">
+                  Small bites, big links.
+                </h1>
+                <p className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
+                  Turn long, clumsy URLs into short links that are easy to
+                  share, then see who clicks them.
+                </p>
 
-          <div className="relative max-w-4xl mx-auto">
-            <div className="flex items-center justify-center gap-3 mb-8">
-              <div className="bg-primary/20 rounded-2xl">
-                <img
-                  src="/logo_rounded.svg"
-                  alt="Nibbly Logo"
-                  className="w-24 h-24"
-                />
+                <form onSubmit={handleShorten} className="mt-10 max-w-xl">
+                  <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-2 shadow-md sm:flex-row">
+                    <label htmlFor="hero-url" className="sr-only">
+                      Long URL
+                    </label>
+                    <Input
+                      id="hero-url"
+                      type="url"
+                      value={url}
+                      onChange={(e) => setUrl(e.target.value)}
+                      placeholder="Paste a long URL here"
+                      className="h-12 border-none bg-transparent shadow-none focus-visible:ring-0"
+                      required
+                    />
+                    <Button type="submit" size="lg">
+                      Shorten
+                      <ArrowRight />
+                    </Button>
+                  </div>
+                </form>
               </div>
-              <h1 className="text-5xl md:text-7xl font-black text-foreground tracking-tight font-sans">
-                Nibbly
-              </h1>
-            </div>
-            <p className="text-2xl md:text-3xl text-muted-foreground mb-4 font-light">
-              Small bites,{' '}
-              <span className="text-primary font-medium">big links</span>
-            </p>{' '}
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
-              Transform long, unwieldy URLs into clean, memorable links. Track
-              performance, customize your brand, and share with confidence.
-            </p>
-            {/* URL Shortener Form */}
-            <form onSubmit={handleShorten} className="max-w-2xl mx-auto mb-8">
-              <div className="flex flex-col sm:flex-row gap-3 p-2 bg-card rounded-xl border border-border shadow-lg">
-                <Input
-                  type="url"
-                  value={url}
-                  onChange={(e) => setUrl(e.target.value)}
-                  placeholder="Paste your long URL here..."
-                  className="border-none"
-                  required
-                />
-                <Button type="submit">
-                  Shorten
-                  <ArrowRight className="w-5 h-5" />
-                </Button>
-              </div>
-            </form>
-          </div>
-        </section>
 
-        {/* Features Section */}
-        <section className="py-20 px-6 max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center mb-4">
-            Everything you need
-          </h2>
-          <p className="text-muted-foreground text-center mb-12 max-w-xl mx-auto">
-            Powerful features to help you manage, track, and optimize your links
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="group bg-card border border-border rounded-xl p-8 hover:border-primary/40 transition-all duration-300 shadow-sm hover:shadow-lg"
-              >
-                <div className="mb-5 p-3 bg-primary/10 rounded-lg w-fit group-hover:bg-primary/20 transition-colors">
-                  {feature.icon}
+              {/* A long link, nibbled down */}
+              <div className="bite relative rounded-2xl border border-border bg-card p-7 shadow-xl sm:p-9">
+                <div className="space-y-1.5">
+                  <p className="text-sm text-muted-foreground">Before</p>
+                  <p className="font-mono text-sm break-all text-muted-foreground line-through decoration-primary/60 decoration-2">
+                    https://www.example.com/blog/2026/summer/menu-launch?utm_source=newsletter&utm_medium=email&utm_campaign=june
+                  </p>
                 </div>
-                <h3 className="text-xl font-semibold text-foreground mb-3 align-center">
-                  {feature.title}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  {feature.description}
+
+                <div className="nibble-in mt-8 space-y-2">
+                  <p className="text-sm text-muted-foreground">After</p>
+                  <div className="flex items-center justify-between gap-3 rounded-xl bg-accent px-5 py-4">
+                    <p className="font-mono text-xl font-medium text-accent-foreground sm:text-2xl">
+                      /summer-menu
+                    </p>
+                    <span className="rounded-full bg-card/70 px-3 py-1 text-sm font-medium text-accent-foreground">
+                      128 clicks
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Features */}
+          <section className="mx-auto max-w-6xl px-4 py-16 md:px-6 md:py-24">
+            <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+              <div className="lg:sticky lg:top-28 lg:self-start">
+                <h2 className="text-3xl font-bold md:text-4xl">
+                  Everything a short link needs
+                </h2>
+                <p className="mt-4 max-w-sm leading-relaxed text-muted-foreground">
+                  Create, customize and track your links from one calm place.
                 </p>
               </div>
-            ))}
-          </div>
-        </section>
 
-        {/* CTA Section */}
-        <section className="py-20 px-6">
-          <div className="max-w-4xl mx-auto text-center bg-linear-to-r from-primary/10 via-accent/10 to-primary/10 rounded-2xl p-12 border border-border shadow-lg">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Ready to get started?
-            </h2>
-            <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
-              Join thousands of users who trust Nibbly for their link management
-              needs.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                to="/auth/register"
-                className="px-8 py-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-lg transition-colors shadow-md"
-              >
-                Create Free Account
-              </Link>
-              <Link
-                to="/links/create"
-                className="px-8 py-4 bg-secondary hover:bg-secondary/80 text-secondary-foreground font-semibold rounded-lg transition-colors"
-              >
-                Create your first link
-              </Link>
+              <ul className="divide-y divide-border border-y border-border">
+                {features.map(({ icon: Icon, title, description }) => (
+                  <li key={title} className="flex gap-5 py-7">
+                    <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
+                      <Icon className="size-5" />
+                    </span>
+                    <div>
+                      <h3 className="text-lg font-semibold">{title}</h3>
+                      <p className="mt-1.5 max-w-md leading-relaxed text-muted-foreground">
+                        {description}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* Footer */}
-        <footer className="py-8 px-6 border-t border-border">
-          <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <img
-                src="/logo_rounded.svg"
-                alt="Nibbly Logo"
-                className="w-16 h-16"
-              />
-              <span className="text-foreground font-semibold">Nibbly</span>
+          {/* Call to action */}
+          <section className="mx-auto max-w-6xl px-4 pb-20 md:px-6 md:pb-28">
+            <div className="bite rounded-2xl bg-accent px-6 py-14 sm:px-12 md:py-16">
+              <h2 className="max-w-md text-3xl font-bold text-accent-foreground md:text-4xl">
+                Ready for your first bite?
+              </h2>
+              <p className="mt-3 max-w-md text-accent-foreground/80">
+                Create a free account to keep all your links and their stats in
+                one place.
+              </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Button size="lg" asChild>
+                  <Link to="/auth/register">Create free account</Link>
+                </Button>
+                <Button size="lg" variant="outline" asChild>
+                  <Link to="/links/create">Make a link without one</Link>
+                </Button>
+              </div>
             </div>
-            <p className="text-muted-foreground text-sm">
-              © 2026 Nibbly. All rights reserved.
-            </p>
-          </div>
-        </footer>
+          </section>
+
+          <footer className="border-t border-border">
+            <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 py-8 md:flex-row md:px-6">
+              <div className="flex items-center gap-2">
+                <img src="/logo_rounded.svg" alt="" className="size-8" />
+                <span className="font-display font-bold">Nibbly</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                © {new Date().getFullYear()} Nibbly. All rights reserved.
+              </p>
+            </div>
+          </footer>
+        </main>
       </div>
     </>
   )
