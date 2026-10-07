@@ -6,6 +6,8 @@ import { mainRouter } from 'src/routes/index.route.ts'
 import { cors } from '@elysiajs/cors'
 import { SERVER_CONFIG } from './config/server.config'
 import { apiRouter } from './routes/api.router'
+import { startJobs } from './lib/jobs'
+import { logger } from './lib/services/Logger'
 
 const app = new Elysia({ adapter: node() })
     .use(
@@ -23,3 +25,11 @@ const app = new Elysia({ adapter: node() })
     .listen(SERVER_CONFIG.port, ({ hostname, port }) => {
         console.log(`🦊 Elysia is running at ${hostname}:${port}`)
     })
+
+// Not awaited: the API should still serve requests if redis is unreachable
+startJobs().catch((error) =>
+    logger.error({
+        msg: 'Failed to start scheduled jobs',
+        error: error.message,
+    })
+)

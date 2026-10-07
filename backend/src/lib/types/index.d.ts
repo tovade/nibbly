@@ -9,6 +9,10 @@ declare namespace NodeJS {
 
         ANALYTICS_SALT: string
         TRUST_PROXY?: string
+
+        REDIS_URL?: string
+        JOBS_ENABLED?: string
+        JOBS_PREFIX?: string
     }
 }
 
