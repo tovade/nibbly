@@ -57,8 +57,8 @@ function RouteComponent() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <Card className="w-full max-w-md">
+    <div className="flex min-h-[calc(100svh-4rem)] items-center justify-center bg-background px-4 py-10">
+      <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center">
           {/* error banner */}
           {errors && Object.keys(errors).length > 0 && (
@@ -76,9 +76,7 @@ function RouteComponent() {
             <h1 className="text-3xl font-bold">Welcome back</h1>
           </CardTitle>
 
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
-            Sign in to your account
-          </p>
+          <p className="mt-2 text-muted-foreground">Sign in to your account</p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -140,29 +138,29 @@ function RouteComponent() {
                     />
                   )}
                 />
-                <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                <span className="ml-2 text-sm text-muted-foreground">
                   Remember me
                 </span>
               </label>
               <Link
                 to="/auth/login"
-                className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                className="text-sm font-medium text-primary underline-offset-4 hover:underline"
               >
                 Forgot password?
               </Link>
             </div>
 
             <Button type="submit" className="w-full" variant={'default'}>
-              Sign In
+              Sign in
             </Button>
           </form>
         </CardContent>
         <CardFooter>
-          <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
+          <p className="mt-2 w-full text-center text-sm text-muted-foreground">
             Don't have an account?{' '}
             <Link
               to="/auth/register"
-              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
+              className="font-medium text-primary underline-offset-4 hover:underline"
             >
               Sign up
             </Link>

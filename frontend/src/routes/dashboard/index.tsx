@@ -31,50 +31,60 @@ function RouteComponent() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-8 ">
-      <div className="max-w-4xl mx-auto">
-        <Alert>
-          <AlertTitle className="text-3xl mb-2">
-            <InfoIcon className="h-8 w-8 inline" /> Notice
-          </AlertTitle>
-          <AlertDescription className="inline">
-            Link overview page has been moved to{' '}
-            <Link
-              to="/dashboard/links"
-              preload="intent"
-              className="underline inline-flex items-center gap-1"
-            >
-              a new page
-              <SquareArrowOutUpRight className="inline h-3 w-3" />
-            </Link>
-          </AlertDescription>
-        </Alert>
-        {/* Header */}
-        <h1 className="text-3xl font-bold text-gray-900 mb-8 dark:text-white mt-5">
-          Hello {user.data?.user.name || 'there'}
+    <div className="min-h-[calc(100svh-4rem)] bg-background px-4 py-10 md:px-6">
+      <div className="mx-auto max-w-3xl">
+        <h1 className="text-4xl font-bold">
+          Hello, {user.data?.user.name || 'there'}
         </h1>
+        <p className="mt-2 text-muted-foreground">
+          Paste a long URL to turn it into a short link.
+        </p>
 
-        {/* URL Shortener Form */}
-        <Card>
+        <Card className="mt-8">
           <CardHeader>
-            <CardTitle>Shorten a URL</CardTitle>
+            <CardTitle className="font-display text-lg">
+              Shorten a URL
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="flex gap-4">
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col gap-3 sm:flex-row"
+            >
+              <label htmlFor="dashboard-url" className="sr-only">
+                Long URL
+              </label>
               <Input
+                id="dashboard-url"
                 type="url"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
-                placeholder="Paste your long URL here..."
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Paste your long URL here"
+                className="flex-1"
                 required
               />
-              <Button type="submit" className="px-6 py-3 dark:text-white">
-                Shorten
-              </Button>
+              <Button type="submit">Shorten</Button>
             </form>
           </CardContent>
         </Card>
+
+        <Alert className="mt-6 border-border bg-secondary/50">
+          <InfoIcon />
+          <AlertTitle>Looking for your links?</AlertTitle>
+          <AlertDescription>
+            <span>
+              The link overview now lives on its own page.{' '}
+              <Link
+                to="/dashboard/links"
+                preload="intent"
+                className="inline-flex items-center gap-1 font-medium text-primary underline underline-offset-4"
+              >
+                Go to your links
+                <SquareArrowOutUpRight className="size-3" />
+              </Link>
+            </span>
+          </AlertDescription>
+        </Alert>
       </div>
     </div>
   )

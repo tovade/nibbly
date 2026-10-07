@@ -67,8 +67,8 @@ function RouteComponent() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background py-12">
-      <Card className="w-full max-w-md">
+    <div className="flex min-h-[calc(100svh-4rem)] items-center justify-center bg-background px-4 py-10">
+      <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center">
           {/* error banner */}
           {errors && Object.keys(errors).length > 0 && (
@@ -85,7 +85,7 @@ function RouteComponent() {
           <CardTitle>
             <h1 className="text-3xl font-bold">Create account</h1>
           </CardTitle>
-          <p>Sign up to get started</p>
+          <p className="mt-2 text-muted-foreground">Sign up to get started</p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -95,7 +95,7 @@ function RouteComponent() {
                 control={control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-name">Your Name</FieldLabel>
+                    <FieldLabel htmlFor="form-name">Your name</FieldLabel>
                     <Input
                       {...field}
                       type="text"
@@ -116,7 +116,7 @@ function RouteComponent() {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor="form-username">
-                      Your Username
+                      Your username
                     </FieldLabel>
                     <Input
                       {...field}
@@ -138,7 +138,7 @@ function RouteComponent() {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor="form-email">
-                      Your Email Address
+                      Your email address
                     </FieldLabel>
                     <Input
                       {...field}
@@ -179,7 +179,7 @@ function RouteComponent() {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor="form-confirm-password">
-                      Confirm Password
+                      Confirm password
                     </FieldLabel>
                     <PasswordInput
                       {...field}
@@ -208,18 +208,18 @@ function RouteComponent() {
                     />
                   )}
                 />{' '}
-                <span className="text-sm text-gray-600 dark:text-gray-400">
+                <span className="text-sm text-muted-foreground">
                   I agree to the{' '}
                   <Link
                     to="/"
-                    className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                    className="font-medium text-primary underline-offset-4 hover:underline"
                   >
                     Terms of Service
                   </Link>{' '}
                   and{' '}
                   <Link
                     to="/"
-                    className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                    className="font-medium text-primary underline-offset-4 hover:underline"
                   >
                     Privacy Policy
                   </Link>
@@ -228,16 +228,16 @@ function RouteComponent() {
             </div>
 
             <Button type="submit" className="w-full" variant={'default'}>
-              Create Account
+              Create account
             </Button>
           </form>
         </CardContent>
         <CardFooter>
-          <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
+          <p className="mt-2 w-full text-center text-sm text-muted-foreground">
             Already have an account?{' '}
             <Link
               to="/auth/login"
-              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
+              className="font-medium text-primary underline-offset-4 hover:underline"
             >
               Sign in
             </Link>

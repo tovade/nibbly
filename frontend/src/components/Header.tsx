@@ -24,96 +24,105 @@ export default function Header() {
     await authClient.signOut()
     window.location.reload()
   }
-  return (
-    <>
-      {/* Header */}
-      <header className="sticky top-0 z-40 w-full border-b border-gray-200 dark:border-gray-800 bg-sidebar backdrop-blur-lg">
-        <div className="flex h-16 items-center justify-between px-4 md:px-6">
-          <div className="flex items-center gap-4">
-            <Link to="/" className="flex items-center gap-0.5">
-              <img
-                src="/logo_rounded.svg"
-                alt="Nibbly Logo"
-                className="h-16 w-16 align-middle inline"
-              />
 
-              <span className="text-xl font-bold text-gray-900 dark:text-white hidden sm:block">
-                Nibbly
-              </span>
-            </Link>
-          </div>
-          {data?.user ? (
-            <div className="flex items-center gap-2">
-              <Button
-                onClick={toggleTheme}
-                variant={'ghost'}
-                className="p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
-                aria-label="Toggle theme"
-              >
-                {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-2 w-full">
-                  <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-medium">
-                    {data.user.name.charAt(0)}
-                  </div>
-                  {data.user.name && (
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {data.user.name}
-                    </span>
-                  )}
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <Link to="/dashboard">
-                    <DropdownMenuItem className="cursor-pointer">
-                      View dashboard
-                    </DropdownMenuItem>
-                  </Link>
-                  <Link to="/dashboard/links">
-                    <DropdownMenuItem className="cursor-pointer">
-                      Manage links
-                    </DropdownMenuItem>
-                  </Link>
-                  <Link to="/links/create">
-                    <DropdownMenuItem className="cursor-pointer">
-                      Create link
-                    </DropdownMenuItem>
-                  </Link>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={logOut}
-                    className="text-destructive cursor-pointer"
-                  >
-                    Log out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              <button
-                onClick={toggleTheme}
-                className="p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
-                aria-label="Toggle theme"
-              >
-                {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-              </button>
+  const themeToggle = (
+    <Button
+      onClick={toggleTheme}
+      variant="ghost"
+      size="icon"
+      className="text-muted-foreground"
+      aria-label={
+        theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
+      }
+    >
+      {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+    </Button>
+  )
+
+  return (
+    <header className="sticky top-0 z-40 w-full bg-background/80 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 md:px-6">
+        <div className="flex items-center gap-6">
+          <Link
+            to="/"
+            className="flex items-center gap-2 rounded-lg outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          >
+            <img src="/logo_rounded.svg" alt="" className="size-10" />
+            <span className="font-display text-xl font-bold tracking-tight">
+              Nibbly
+            </span>
+          </Link>
+          {data?.user && (
+            <nav className="hidden items-center gap-1 sm:flex">
               <Link
-                to="/auth/login"
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+                to="/dashboard/links"
+                className="rounded-lg px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                activeProps={{ className: 'bg-secondary text-foreground' }}
               >
-                Sign in
+                Your links
               </Link>
               <Link
-                to="/auth/register"
-                className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg transition-all shadow-md hover:shadow-lg"
+                to="/links/create"
+                className="rounded-lg px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                activeProps={{ className: 'bg-secondary text-foreground' }}
               >
-                Get Started
+                New link
               </Link>
-            </div>
+            </nav>
           )}
         </div>
-      </header>
-    </>
+
+        <div className="flex items-center gap-1.5">
+          {themeToggle}
+          {data?.user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-2 rounded-full py-1 pr-2 pl-1 outline-none transition-colors hover:bg-secondary focus-visible:ring-[3px] focus-visible:ring-ring/50">
+                <span className="flex size-8 items-center justify-center rounded-full bg-accent text-sm font-semibold text-accent-foreground">
+                  {data.user.name.charAt(0).toUpperCase()}
+                </span>
+                {data.user.name && (
+                  <span className="hidden text-sm font-medium sm:block">
+                    {data.user.name}
+                  </span>
+                )}
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-48">
+                <Link to="/dashboard">
+                  <DropdownMenuItem className="cursor-pointer">
+                    View dashboard
+                  </DropdownMenuItem>
+                </Link>
+                <Link to="/dashboard/links">
+                  <DropdownMenuItem className="cursor-pointer">
+                    Manage links
+                  </DropdownMenuItem>
+                </Link>
+                <Link to="/links/create">
+                  <DropdownMenuItem className="cursor-pointer">
+                    Create link
+                  </DropdownMenuItem>
+                </Link>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={logOut}
+                  className="cursor-pointer text-destructive"
+                >
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <>
+              <Button variant="ghost" asChild>
+                <Link to="/auth/login">Sign in</Link>
+              </Button>
+              <Button asChild>
+                <Link to="/auth/register">Get started</Link>
+              </Button>
+            </>
+          )}
+        </div>
+      </div>
+    </header>
   )
 }

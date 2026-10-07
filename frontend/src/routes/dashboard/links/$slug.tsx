@@ -90,7 +90,9 @@ function StatCard({
         {value === undefined ? (
           <div className="h-9 w-20 rounded bg-muted animate-pulse" />
         ) : (
-          <div className="text-3xl font-bold">{value.toLocaleString()}</div>
+          <div className="font-display text-4xl font-bold tabular-nums">
+            {value.toLocaleString()}
+          </div>
         )}
       </CardContent>
     </Card>
@@ -113,7 +115,7 @@ function BreakdownCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">{title}</CardTitle>
+        <CardTitle className="font-display text-base">{title}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         {loading &&
@@ -133,7 +135,7 @@ function BreakdownCard({
                 {item.count.toLocaleString()}
               </span>
             </div>
-            <div className="h-1.5 rounded-full bg-muted">
+            <div className="h-2 rounded-full bg-secondary">
               <div
                 className="h-full rounded-full bg-primary"
                 style={{ width: `${(item.count / max) * 100}%` }}
@@ -158,9 +160,9 @@ function ErrorState({ error }: { error: Error }) {
           : 'Failed to load analytics. Please try again later.'
 
   return (
-    <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border bg-card py-16">
+    <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-input bg-card px-6 py-16 text-center">
       <BarChart3 className="h-12 w-12 text-muted-foreground mb-4" />
-      <h3 className="text-lg font-medium text-foreground">{message}</h3>
+      <h2 className="text-lg font-medium text-foreground">{message}</h2>
       <div className="mt-4 flex gap-2">
         {status === 401 && (
           <Button asChild>
@@ -194,7 +196,7 @@ function RouteComponent() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-6">
+    <div className="mx-auto max-w-5xl space-y-6 px-4 py-10 md:px-6">
       <div>
         <Button variant="ghost" size="sm" asChild className="mb-4 -ml-2">
           <Link to="/dashboard/links">
@@ -204,7 +206,7 @@ function RouteComponent() {
 
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
-            <h1 className="text-3xl font-bold text-foreground truncate">
+            <h1 className="truncate font-mono text-3xl font-semibold text-foreground">
               /{slug}
             </h1>
             {originalUrl && (
@@ -266,7 +268,9 @@ function RouteComponent() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Clicks over time</CardTitle>
+              <CardTitle className="font-display text-base">
+                Clicks over time
+              </CardTitle>
               <CardDescription>
                 Bots are excluded. Unique visitors are counted per day, and raw
                 IP addresses are never stored.
@@ -274,7 +278,7 @@ function RouteComponent() {
             </CardHeader>
             <CardContent>
               {isLoading ? (
-                <div className="h-64 rounded bg-muted animate-pulse" />
+                <div className="h-64 animate-pulse rounded-lg bg-muted" />
               ) : data && data.summary.total === 0 ? (
                 <div className="flex h-64 flex-col items-center justify-center text-center">
                   <BarChart3 className="h-10 w-10 text-muted-foreground mb-3" />
@@ -313,7 +317,8 @@ function RouteComponent() {
                       type="monotone"
                       stroke="var(--color-total)"
                       fill="var(--color-total)"
-                      fillOpacity={0.2}
+                      fillOpacity={0.18}
+                      strokeWidth={2}
                     />
                     <Area
                       dataKey="unique"
