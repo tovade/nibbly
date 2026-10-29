@@ -1,10 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createFileRoute } from '@tanstack/react-router'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import z from 'zod'
-import { CircleQuestionMark } from 'lucide-react'
+import { Check, CircleCheck, CircleQuestionMark, Copy, X } from 'lucide-react'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -14,7 +15,7 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { useLinkCreation } from '@/lib/api/links'
+import { getShortUrl, useLinkCreation } from '@/lib/api/links'
 import { authClient } from '@/lib/auth-client'
 import { LoadingSwap } from '@/components/ui/loading-swap'
 import {
@@ -38,6 +39,8 @@ function RouteComponent() {
   const { data } = authClient.useSession()
   const { link } = Route.useSearch()
   const { mutateAsync, isPending } = useLinkCreation()
+  const [shortUrl, setShortUrl] = useState<string | null>(null)
+  const [copied, setCopied] = useState(false)
 
   const { handleSubmit, control, setValue } = useForm<
     z.infer<typeof linkSchema>
@@ -55,13 +58,64 @@ function RouteComponent() {
     try {
       const resp = await mutateAsync(dataForm)
 
+      setShortUrl(getShortUrl(resp.data?.shortCode as string))
+      setCopied(false)
       toast.success(`Created a bite with the code: ${resp.data?.shortCode}`)
     } catch (err: any) {
       return toast.error(err)
     }
   }
+
+  const copy = async () => {
+    if (!shortUrl) return
+    await navigator.clipboard.writeText(shortUrl)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
   return (
-    <div className="flex min-h-[calc(100svh-4rem)] items-center justify-center bg-background px-4 py-10">
+    <div className="flex min-h-[calc(100svh-4rem)] flex-col items-center justify-center gap-4 bg-background px-4 py-10">
+      {shortUrl && (
+        <Alert className="w-full max-w-md shadow-lg animate-in fade-in-0 slide-in-from-top-2">
+          <CircleCheck />
+          <AlertTitle>Your short link is ready</AlertTitle>
+          <AlertDescription className="w-full">
+            <div className="flex w-full items-center gap-2">
+              <a
+                href={shortUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="min-w-0 flex-1 truncate font-mono text-foreground hover:underline"
+                title={shortUrl}
+              >
+                {shortUrl}
+              </a>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                onClick={copy}
+                aria-label={copied ? 'Copied' : 'Copy short link'}
+              >
+                {copied ? (
+                  <Check className="h-4 w-4" />
+                ) : (
+                  <Copy className="h-4 w-4" />
+                )}
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => setShortUrl(null)}
+                aria-label="Dismiss"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center">
           <CardTitle>
