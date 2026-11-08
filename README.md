@@ -29,6 +29,9 @@ This is a shorturl service. I've made this for fun so the code isn't really that
 - **[Better Auth](https://www.better-auth.com/)** - Authentication library
 - **[Drizzle ORM](https://orm.drizzle.team/)** - Lightweight and performant ORM
 - **[PostgreSQL](https://www.postgresql.org/)** - Relational database
+- **[Redis](https://redis.io/)** - In-memory store, used as the queue backend for scheduled jobs
+- **[BullMQ](https://bullmq.io/)** - Job queue and scheduler (cleanup of old anonymous links)
+- **[Docker Compose](https://docs.docker.com/compose/)** - Optional one-command setup for PostgreSQL and Redis
 - **[React](https://react.dev/)** - UI library for frontend
 - **[Vite](https://vitejs.dev/)** - Next generation frontend build tool
 - **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework
@@ -42,8 +45,7 @@ This is a shorturl service. I've made this for fun so the code isn't really that
 
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+To get a local copy up and running follow these steps.
 
 ### Prerequisites
 
@@ -57,15 +59,6 @@ This project uses **Bun** as the runtime and package manager. Make sure you have
 
   Install guide: https://bun.com/
 
-- **PostgreSQL** (v12 or higher)
-
-  ```sh
-  psql --version
-  ```
-
-  Windows: https://www.postgresql.org/download/
-  Linux: Google for your own distro, its very different for each distro :/
-
 - **Git**
 
   ```sh
@@ -75,27 +68,49 @@ This project uses **Bun** as the runtime and package manager. Make sure you have
   Windows: https://git-scm.com/install/windows
   Linux: use your package manager to install git that comes with your distro.
 
-Verify your installations:
+- **PostgreSQL** (v12 or higher) **and Redis** (v6.2 or higher)
+
+  The easiest way is **Docker** with the included `docker-compose.yml`, which starts both for you:
+
+  ```sh
+  docker --version
+  docker compose version
+  ```
+
+  Install guide: https://docs.docker.com/get-started/get-docker/
+
+  Prefer not to use Docker? Install [PostgreSQL](https://www.postgresql.org/download/) and [Redis](https://redis.io/docs/latest/operate/oss_and_stack/install/) yourself and point the `.env` values at them.
 
 ### Installation
 
-<!-- _Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._ -->
-
 1. Clone the repo
+
    ```sh
    git clone https://github.com/tovade/nibbly.git
+   cd nibbly
    ```
-2. Go to the backend folder
+
+2. Start PostgreSQL and Redis (skip this if you run your own)
+
+   ```sh
+   docker compose up -d
+   ```
+
+   This starts Postgres on port `5432` and Redis on port `6379`, with data kept in Docker volumes. The defaults are user `postgres`, password `postgres` and database `nibbly`. To change them (or the ports), set `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `POSTGRES_PORT` or `REDIS_PORT` in a `.env` file next to `docker-compose.yml`.
+
+3. Go to the backend folder
+
    ```sh
    cd backend
    ```
-3. install npm packages with bun !!!IMPORTANT!!! this project runs on the bun runtime
+
+4. Install packages with bun !!!IMPORTANT!!! this project runs on the bun runtime
 
    ```sh
    bun install
    ```
 
-4. Set up environment variables
+5. Set up environment variables
 
    ```sh
    # Copy the example environment file
@@ -109,18 +124,34 @@ Verify your installations:
    PORT=3001
 
    # Database
-   # Replace everything in brackets
-   # handy tip: host is usually just "localhost" and the default port is "5432"
+   # With the docker compose defaults this is:
+   # postgresql://postgres:postgres@localhost:5432/nibbly
    DATABASE_URL=postgresql://[user]:[password]@[host][:port][/dbname]
 
    # just smash your keyboard here like 5 times to generate a super secret secret
    BETTER_AUTH_SECRET=MY_SUPER_DUPER_SECRET_URL
-   BETTER_AUTH_URL=http://localhost:3000 # Base URL of your app
+   BETTER_AUTH_URL=http://localhost:3000 # Base URL of your app (the frontend)
+
+   # REQUIRED: secret used to hash visitor IPs for unique-click counting.
+   # The server refuses to start without it. Generate one with: openssl rand -hex 32
+   ANALYTICS_SALT=CHANGE_ME_TO_A_LONG_RANDOM_STRING
+
+   # Only set to true when running behind a reverse proxy/CDN you control,
+   # so x-forwarded-for / cf-connecting-ip are trusted for the client IP.
+   TRUST_PROXY=false
+
+   # Redis, used by BullMQ for scheduled jobs
+   # format: redis://[user:password@]host[:port][/db]
+   REDIS_URL=redis://localhost:6379
+   # Set to false to not start the job scheduler/worker in this process
+   JOBS_ENABLED=true
+   # Prefix for all redis keys, change it if several apps share one redis
+   JOBS_PREFIX=nibbly
    ```
 
-5. Set up the database
+6. Set up the database
 
-   Make sure you have PostgreSQL installed and running on your system.
+   Make sure PostgreSQL is running (see step 2).
 
    ```sh
    # Apply migrations to your database
@@ -136,50 +167,86 @@ Verify your installations:
    bun run db:studio
    ```
 
-6. Start the backend development server
+7. Start the backend development server
 
    ```sh
    bun run dev
    ```
 
-   The backend should now be running on `http://localhost:3001` (or the port you specified).
+   The backend should now be running on `http://localhost:3001` (or the port you specified). On startup it also connects to Redis and registers the scheduled jobs. If Redis isn't available, either start it or set `JOBS_ENABLED=false`.
 
-7. Set up the frontend
+8. Set up the frontend
 
    Open a new terminal and navigate to the frontend folder:
 
    ```sh
-   # Exit the backend folder and enter the frontend folder
-   cd ../frontend
+   cd frontend
    ```
 
-8. Install frontend dependencies
+   (from the repository root)
+
+9. Install frontend dependencies
 
    ```sh
    bun install
    ```
 
-9. Set up frontend environment variables
+10. Set up frontend environment variables
 
-   ```sh
-   # Copy the example environment file
-   cp .env.example .env
-   ```
+    ```sh
+    # Copy the example environment file
+    cp .env.example .env
+    ```
 
-   Open the `.env` file and fill in the required values:
+    Open the `.env` file and fill in the required values:
 
-   ```env
-   # Your backend URL (should match the backend PORT)
-   VITE_BACKEND_URL="http://localhost:3001"
-   ```
+    ```env
+    # Your backend URL (should match the backend PORT)
+    VITE_BACKEND_URL="http://localhost:3001"
+    ```
 
-10. Start the frontend development server
+11. Start the frontend development server
 
     ```sh
     bun run dev
     ```
 
-    The frontend should now be running on `http://localhost:3000` (or another port if 3000 is taken).
+    The frontend should now be running on `http://localhost:3000`. Open it, create an account and make your first short link!
+
+### Scheduled jobs
+
+Jobs live in `backend/src/lib/jobs/definitions/` and run through BullMQ, so they need Redis. Currently there is one:
+
+| Job                      | Schedule       | What it does                                                          |
+| ------------------------ | -------------- | --------------------------------------------------------------------- |
+| `cleanup-orphaned-links` | Daily at 03:00 | Deletes links with no owner older than 30 days (and their click data) |
+
+Links that belong to an account are never removed by this job. To run the API without the scheduler (for example when jobs run in a separate process), set `JOBS_ENABLED=false`.
+
+### Useful commands
+
+Backend (`backend/`):
+
+| Command               | Description                                    |
+| --------------------- | ---------------------------------------------- |
+| `bun run dev`         | Start the server with hot reload               |
+| `bun run start`       | Start the server                               |
+| `bun run build`       | Bundle the server into `dist/`                 |
+| `bun test`            | Run the tests                                  |
+| `bun run db:generate` | Generate a migration after changing the schema |
+| `bun run db:migrate`  | Apply migrations                               |
+| `bun run db:push`     | Push the schema directly (development)         |
+| `bun run db:studio`   | Open Drizzle Studio                            |
+| `bun run format`      | Format with Prettier                           |
+
+Frontend (`frontend/`):
+
+| Command         | Description                         |
+| --------------- | ----------------------------------- |
+| `bun run dev`   | Start the dev server on port 3000   |
+| `bun run build` | Production build                    |
+| `bun run test`  | Run the tests                       |
+| `bun run check` | Format with Prettier and fix ESLint |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
